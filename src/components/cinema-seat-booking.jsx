@@ -128,6 +128,10 @@ const CinemaSeatBooking = ({
     });
 
     if (!isCurrentlySelected) {
+      // Add seat to selectedSeats
+      setSelectedSeats((prev) => [...prev, seat]);
+    } else {
+      // Remove seat from selectedSeats
       setSelectedSeats((prev) => prev.filter((s) => s.id !== seat.id));
     }
   };
@@ -162,6 +166,10 @@ const CinemaSeatBooking = ({
       };
     }
   );
+
+  const getTotalPrice = () => {
+    return selectedSeats.reduce((total, seat) => total + seat.price, 0);
+  };
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
@@ -230,7 +238,32 @@ const CinemaSeatBooking = ({
         </div>
       </div>
 
-      {/* Summary  */}
+      {/* Booking Summary  */}
+      <div className="bg-gray-50 rounded-lg p-4 mb-4">
+        <h3 className="font-bold text-lg mb-2">Booking Summary</h3>
+
+        {selectedSeats.length > 0 ? (
+          <div>
+            <p className="mb-2">
+              Selected Seats:{" "}
+              <span className="font-medium">
+                {selectedSeats.map((s) => s.id).join(", ")}
+              </span>
+            </p>
+            <p className="mb-2">
+              Number of Seats:{" "}
+              <span className="font-medium">{selectedSeats.length}</span>
+            </p>
+            <p className="text-xl font-bold text-green-600">
+              Total: {currency}
+              {getTotalPrice()}
+            </p>
+          </div>
+        ) : (
+          <p className="text-gray-500">No seats selected</p>
+        )}
+      </div>
+
       {/* Booking Button  */}
     </div>
   );
