@@ -25,9 +25,15 @@ const CinemaSeatBooking = ({
           {title}
         </h1>
         <p className="text-center text-gray-600 mb-6">{subtitle}</p>
+
+        {/* Screen  */}
+        <div className="mb-8">
+          <div className="w-full h-4 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 rounded-lg mb-2 shadow-inner" />
+          <p className="text-center text-sm to-gray-500 font-medium">SCREEN</p>
+        </div>
+
       </div>
 
-      {/* Screen  */}
       {/* Seat Map  */}
       {/* Legend  */}
       {/* Summary  */}
