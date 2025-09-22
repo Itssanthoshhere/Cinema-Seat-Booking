@@ -171,6 +171,40 @@ const CinemaSeatBooking = ({
     return selectedSeats.reduce((total, seat) => total + seat.price, 0);
   };
 
+  const handleBooking = () => {
+    if (selectedSeats.length === 0) {
+      alert("Please select at least one seat");
+      return;
+    }
+
+    setSeats((prevSeats) => {
+      return prevSeats.map((row) =>
+        row.map((seat) => {
+          if (selectedSeats.some((selected) => selected.id === seat.id)) {
+            return { ...seat, status: "booked", selected: false };
+          }
+
+          return seat;
+        })
+      );
+    });
+
+    // Call callback
+    onBookingComplete({
+      seats: selectedSeats,
+      totalPrice: getTotalPrice(),
+      seatIds: selectedSeats.map((seat) => seat.id),
+    });
+
+    alert(
+      `Successfully booked ${
+        selectedSeats.length
+      } seat(s) for ${currency}${getTotalPrice()}`
+    );
+
+    setSelectedSeats([]);
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
       {/* Title  */}
@@ -265,6 +299,21 @@ const CinemaSeatBooking = ({
       </div>
 
       {/* Booking Button  */}
+      <button
+        onClick={handleBooking}
+        disabled={selectedSeats.length === 0}
+        className={`w-full py-3 px-6 rounded-lg font-bold text-lg transition-all duration-200 ${
+          selectedSeats.length > 0
+            ? "bg-green-500 hover:bg-green-600 text-white transform hover:scale-105"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        }`}
+      >
+        {selectedSeats.length > 0
+          ? `Book ${
+              selectedSeats.length
+            } Seat(s) - ${currency}${getTotalPrice()}`
+          : "Select Seats to Book"}
+      </button>
     </div>
   );
 };
