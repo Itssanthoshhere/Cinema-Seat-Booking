@@ -109,6 +109,27 @@ const CinemaSeatBooking = ({
 
   const handleSeatClick = (rowIndex, seatIndex) => {
     // TODO: Implement seat click logic
+    const seat = seats[rowIndex][seatIndex];
+
+    if (seat.status === "booked") return;
+
+    const isCurrentlySelected = seat.selected;
+
+    setSeats((prevSeats) => {
+      return prevSeats.map((row, rIdx) =>
+        row.map((s, sIdx) => {
+          if (rIdx === rowIndex && sIdx === seatIndex) {
+            return { ...s, selected: !s.selected };
+          }
+
+          return s;
+        })
+      );
+    });
+
+    if (!isCurrentlySelected) {
+      setSelectedSeats((prev) => prev.filter((s) => s.id !== seat.id));
+    }
   };
 
   const renderSeatSection = (seatRow, startIndex, endIndex) => {
@@ -131,6 +152,16 @@ const CinemaSeatBooking = ({
       </div>
     );
   };
+
+  const uniqueSeatTypes = Object.entries(seatTypes).map(
+    ([type, config], index) => {
+      return {
+        type,
+        color: colors[index % colors.length],
+        ...config,
+      };
+    }
+  );
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-4">
@@ -172,6 +203,33 @@ const CinemaSeatBooking = ({
       </div>
 
       {/* Legend  */}
+      <div className="flex flex-wrap justify-center gap-6 mb-6 p-4 bg-gray-50 rounded-lg">
+        {uniqueSeatTypes.map((seatType) => {
+          return (
+            <div key={seatType.type} className="flex items-center">
+              <div
+                className={`w-6 h-6 border-2 rounded-t-lg mr-2 ${
+                  getColorClass(seatType.color) || "bg-blue-100 border-blue-300"
+                }`}
+              ></div>
+              <span className="text-sm">
+                {seatType.name} ({currency}
+                {seatType.price})
+              </span>
+            </div>
+          );
+        })}
+
+        <div className="flex items-center">
+          <div className="w-6 h-6 bg-green-500 border-2 border-green-600 rounded-t-lg mr-2"></div>
+          <span className="text-sm">Selected</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-6 h-6 bg-gray-400 border-2 border-gray-500 rounded-t-lg mr-2"></div>
+          <span className="text-sm">Booked</span>
+        </div>
+      </div>
+
       {/* Summary  */}
       {/* Booking Button  */}
     </div>
